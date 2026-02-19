@@ -1,11 +1,13 @@
 package Palindrome;
 
+import java.util.Stack;
+
 public class UseCasePalindromeCheckerApp {
 
     public static void main(String[] args) {
 
         // ==============================
-        // UC4 - Character Array Based Palindrome Check
+        // UC5 - Stack-Based Palindrome Checker
         // ==============================
 
         System.out.println("====================================");
@@ -15,26 +17,23 @@ public class UseCasePalindromeCheckerApp {
         // Original string
         String original = "madam";
 
-        // Convert string to character array
-        char[] charArray = original.toCharArray();
+        // Create a Stack
+        Stack<Character> stack = new Stack<>();
 
-        // Two-pointer technique
-        int start = 0;
-        int end = charArray.length - 1;
-
-        boolean isPalindrome = true;
-
-        while (start < end) {
-            if (charArray[start] != charArray[end]) {
-                isPalindrome = false;
-                break;
-            }
-            start++;
-            end--;
+        // Push all characters into stack
+        for (int i = 0; i < original.length(); i++) {
+            stack.push(original.charAt(i));
         }
 
-        // Display result
-        if (isPalindrome) {
+        // Pop characters and build reversed string
+        String reversed = "";
+
+        while (!stack.isEmpty()) {
+            reversed = reversed + stack.pop();
+        }
+
+        // Compare original and reversed
+        if (original.equals(reversed)) {
             System.out.println("The string \"" + original + "\" is a PALINDROME.");
         } else {
             System.out.println("The string \"" + original + "\" is NOT a palindrome.");
