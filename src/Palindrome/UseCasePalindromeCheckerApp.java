@@ -1,32 +1,81 @@
 package Palindrome;
 
-import java.util.Scanner;
+import java.util.*;
 
 // ==============================
-// UC11: Palindrome Service Class (Encapsulation)
+// Strategy Interface
 // ==============================
-class PalindromeChecker {
+interface PalindromeStrategy {
+    boolean check(String input);
+}
 
-    // Method to check palindrome
-    public boolean checkPalindrome(String input) {
 
-        // Normalize string (ignore spaces and case)
+// ==============================
+// Stack Strategy Implementation
+// ==============================
+class StackStrategy implements PalindromeStrategy {
+
+    public boolean check(String input) {
+
         input = input.replaceAll("\\s+", "").toLowerCase();
 
-        int start = 0;
-        int end = input.length() - 1;
+        Stack<Character> stack = new Stack<>();
 
-        while (start < end) {
+        for (char c : input.toCharArray()) {
+            stack.push(c);
+        }
 
-            if (input.charAt(start) != input.charAt(end)) {
+        for (char c : input.toCharArray()) {
+            if (c != stack.pop()) {
                 return false;
             }
-
-            start++;
-            end--;
         }
 
         return true;
+    }
+}
+
+
+// ==============================
+// Deque Strategy Implementation
+// ==============================
+class DequeStrategy implements PalindromeStrategy {
+
+    public boolean check(String input) {
+
+        input = input.replaceAll("\\s+", "").toLowerCase();
+
+        Deque<Character> deque = new ArrayDeque<>();
+
+        for (char c : input.toCharArray()) {
+            deque.addLast(c);
+        }
+
+        while (deque.size() > 1) {
+
+            if (deque.removeFirst() != deque.removeLast()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+
+// ==============================
+// Context Class
+// ==============================
+class PalindromeChecker {
+
+    private PalindromeStrategy strategy;
+
+    public PalindromeChecker(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean checkPalindrome(String input) {
+        return strategy.check(input);
     }
 }
 
@@ -48,10 +97,22 @@ public class UseCasePalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Create object of PalindromeChecker
-        PalindromeChecker checker = new PalindromeChecker();
+        System.out.println("\nChoose Strategy:");
+        System.out.println("1. Stack Strategy");
+        System.out.println("2. Deque Strategy");
 
-        // Call service method
+        System.out.print("Enter choice: ");
+        int choice = scanner.nextInt();
+
+        PalindromeStrategy strategy;
+
+        if (choice == 1)
+            strategy = new StackStrategy();
+        else
+            strategy = new DequeStrategy();
+
+        PalindromeChecker checker = new PalindromeChecker(strategy);
+
         boolean result = checker.checkPalindrome(input);
 
         if (result)
